@@ -90,6 +90,9 @@ class MarvelApiClientModel
      */
     public function apiConnector($callUrl)
     {
+        if (!filter_var($callUrl, FILTER_VALIDATE_URL)) {
+            throw new \Exception('Invalid Url');
+        }
         curl_setopt_array($this->curlInstance, array(
             CURLOPT_URL => $callUrl,
             CURLOPT_RETURNTRANSFER => true,

@@ -10,11 +10,9 @@ class ApiClientTest extends PHPUnit_Framework_TestCase
     {
         try {
             (new MarvelApiClientModel())
-                    ->getCharactersCollection();
+                    ->apiConnector('test');
         } catch (Exception $e) {
-            $this->fail(sprintf("Failed asserting that element: %s does exist on page: %s",
-                'ok', 'ok'
-            ));
+            $this->fail($e);
         }
     }
 
