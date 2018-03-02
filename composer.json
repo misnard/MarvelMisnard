@@ -1,0 +1,19 @@
+{
+    "name": "misnard/marvel",
+    "require-dev": {
+        "phpunit/phpunit": "~5.2"
+    },
+    "authors": [
+        {
+            "name": "maher isnard",
+            "email": "maher.isnard@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Marvel\\" : "src/"
+        }
+    },
+
+    "require": {}
+}

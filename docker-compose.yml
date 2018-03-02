@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+    web:
+        image: chialab/php:5.6-apache
+        ports:
+            - "80:80"
+        volumes:
+            - ./:/var/www/html
+            - ~/config/php.ini:/etc/php5/apache2/conf.d/90-custom.ini
+
