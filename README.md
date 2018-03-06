@@ -1,4 +1,4 @@
-## To inisialize project
+## To initialize project
 
 Add you api key in src/Model/MarvelApiClientModel.php
 
