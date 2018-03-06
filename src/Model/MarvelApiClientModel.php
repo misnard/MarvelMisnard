@@ -5,9 +5,6 @@ namespace Marvel\Model;
 /**
  * Main class to communicate with marvel api
  *
- * Class Marvel_ApiClient_Model
- */
-/**
  * Class MarvelApiClientModel
  * @package Marvel\Model
  */
@@ -16,11 +13,11 @@ class MarvelApiClientModel
     /**
      * Marvel Public key
      */
-    const MARVEL_PUBLIC_KEY = '89d02abcee3e7c312303a9131b2d1dd5';
+    const MARVEL_PUBLIC_KEY = '';
     /**
      * Marvel Private key
      */
-    const MARVEL_PRIVATE_KEY = '300c833635250dbb9353a51abeabdd9e1615822a';
+    const MARVEL_PRIVATE_KEY = '';
 
     /**
      * Marvel base url api
@@ -90,9 +87,7 @@ class MarvelApiClientModel
      */
     public function apiConnector($callUrl)
     {
-        if (!filter_var($callUrl, FILTER_VALIDATE_URL)) {
-            throw new \Exception('Invalid Url');
-        }
+        $this->catchApiBeforeErrors($callUrl);
         curl_setopt_array($this->curlInstance, array(
             CURLOPT_URL => $callUrl,
             CURLOPT_RETURNTRANSFER => true,
@@ -105,7 +100,7 @@ class MarvelApiClientModel
         ));
 
         $apiResult =  json_decode(curl_exec($this->curlInstance));
-        $this->catchApiErrors($apiResult);
+        $this->catchApiAfterErrors($apiResult);
 
         return $apiResult;
     }
@@ -128,16 +123,36 @@ class MarvelApiClientModel
     }
 
     /**
+     * Catch Errors on url construction error
+     *
+     * @param $callUrl
+     * @throws \Exception
+     */
+    public function catchApiBeforeErrors($callUrl) {
+        if (!filter_var($callUrl, FILTER_VALIDATE_URL)) {
+            throw new \Exception('Invalid Url : Bad format');
+        }
+        if (!strpos($callUrl, 'apikey=')) {
+            throw new \Exception('Invalid Url : Missed Api key');
+        }
+        if (!strpos($callUrl, 'ts=')) {
+            throw new \Exception('Invalid Url : Missed TimeStamp');
+        }
+        if (!strpos($callUrl, 'hash=')) {
+            throw new \Exception('Invalid Url : Missed Hash');
+        }
+    }
+
+    /**
      * Check api response code to catch error and create new exception
      *
      * @param object $apiResult
      * @throws \Exception
      */
-    public function catchApiErrors($apiResult)
+    public function catchApiAfterErrors($apiResult)
     {
         if ($apiResult->code != '200' || $apiResult->status != 'Ok') {
-            throw new \Exception('Error on api response code : ' . $apiResult->code . ' / status : '
-                . $apiResult->status);
+            throw new \Exception('Error on api response code : ' . $apiResult->code);
         }
         if ($error = curl_error($this->curlInstance)) {
             throw new \Exception('Error on api connexion : ' . $error);
